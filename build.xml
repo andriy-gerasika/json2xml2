@@ -1,0 +1,27 @@
+<project default="build">
+	<property name="name" value="json2xml2" />
+
+	<target name="clean">
+		<delete dir="build" />
+	</target>
+
+	<target name="build" depends="clean">
+		<mkdir dir="build/classes" />
+		<javac srcdir="src" destdir="build/classes">
+			<classpath>
+				<fileset dir="lib">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
+		</javac>
+		<copy todir="build/classes">
+			<fileset dir="src" includes="**/*.xsd" />
+		</copy>
+		<jar destfile="build/${name}.jar" basedir="build/classes">
+			<manifest>
+				<attribute name="Main-Class" value="com.gerixsoft.json2xml2.JsonToXml" />
+			</manifest>
+		</jar>
+	</target>
+
+</project>
