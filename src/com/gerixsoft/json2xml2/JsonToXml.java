@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXSource;
@@ -22,25 +23,39 @@ public class JsonToXml {
 
 	public static void main(String[] args) throws IOException, SAXException, TransformerException {
 		if (args.length != 2) {
-			System.err.println("usage: <json-file> <xml-file>");
+			System.err.println("usage: <input-json-file-or-directory> <output-xml-file-or-directory>");
 			System.exit(-1);
 		}
-		File jsonFile = new File(args[0]);
-		File xmlFile = new File(args[1]);
+		new JsonToXml().transform(new File(args[0]), new File(args[1]));
+		System.out.println("ok");
+	}
 
-		Transformer transformer = TransformerFactory.newInstance().newTransformer();
-		transformer.transform(
-				new SAXSource(new JsonSaxParser(), new InputSource(jsonFile.toString())),
-				new StreamResult(xmlFile));
+	private Transformer transformer;
+	private Validator validator;
+
+	JsonToXml() throws SAXException, TransformerConfigurationException {
+		transformer = TransformerFactory.newInstance().newTransformer();
 
 		SchemaFactory schemaFactory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
-		Schema schema = schemaFactory.newSchema(new StreamSource(JsonToXml.class
-				.getResourceAsStream("json.xsd")));
-		Validator validator = schema.newValidator();
+		Schema schema = schemaFactory.newSchema(new StreamSource(JsonToXml.class.getResourceAsStream("json.xsd")));
+		validator = schema.newValidator();
 		validator.setErrorHandler(new __ErrorHandler());
-		validator.validate(new StreamSource(xmlFile));
+	}
 
-		System.out.println("ok");
+	public void transform(File input, File output) throws SAXException, IOException, TransformerException {
+		if (input.isDirectory()) {
+			output.mkdir();
+			for (File child : input.listFiles()) {
+				if (child.isDirectory()) {
+					transform(child, new File(output, child.getName()));
+				} else if (child.getName().endsWith(".json")) {
+					transform(child, new File(output, child.getName().concat(".xml")));
+				}
+			}
+			return;
+		}
+		transformer.transform(new SAXSource(new JsonSaxParser(), new InputSource(input.toString())), new StreamResult(output));
+		validator.validate(new StreamSource(output));
 	}
 
 	private static final class __ErrorHandler implements ErrorHandler {

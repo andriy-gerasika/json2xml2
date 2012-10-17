@@ -31,8 +31,8 @@
 				<path refid="classpath" />
 				<path location="build/${ant.project.name}.jar" />
 			</classpath>
-			<arg file="files/input.json" />
-			<arg file="files/output.xml" />
+			<arg file="files" />
+			<arg file="files" />
 		</java>
 	</target>
 
