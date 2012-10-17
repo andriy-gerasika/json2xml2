@@ -36,7 +36,7 @@ public class JsonToXml {
 	private Transformer transformer;
 	private Validator validator;
 
-	JsonToXml(boolean validate) throws SAXException, TransformerConfigurationException {
+	public JsonToXml(boolean validate) throws SAXException, TransformerConfigurationException {
 		transformer = TransformerFactory.newInstance().newTransformer();
 		if (validate) {
 			SchemaFactory schemaFactory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
