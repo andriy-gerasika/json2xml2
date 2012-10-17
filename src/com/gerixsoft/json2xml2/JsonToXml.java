@@ -26,20 +26,24 @@ public class JsonToXml {
 			System.err.println("usage: <input-json-file-or-directory> <output-xml-file-or-directory>");
 			System.exit(-1);
 		}
-		new JsonToXml().transform(new File(args[0]), new File(args[1]));
+		JsonToXml json2xml = new JsonToXml(true);
+		json2xml.transformer.setOutputProperty("indent", "yes");
+		json2xml.transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+		json2xml.transform(new File(args[0]), new File(args[1]));
 		System.out.println("ok");
 	}
 
 	private Transformer transformer;
 	private Validator validator;
 
-	JsonToXml() throws SAXException, TransformerConfigurationException {
+	JsonToXml(boolean validate) throws SAXException, TransformerConfigurationException {
 		transformer = TransformerFactory.newInstance().newTransformer();
-
-		SchemaFactory schemaFactory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
-		Schema schema = schemaFactory.newSchema(new StreamSource(JsonToXml.class.getResourceAsStream("json.xsd")));
-		validator = schema.newValidator();
-		validator.setErrorHandler(new __ErrorHandler());
+		if (validate) {
+			SchemaFactory schemaFactory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
+			Schema schema = schemaFactory.newSchema(new StreamSource(JsonToXml.class.getResourceAsStream("json.xsd")));
+			validator = schema.newValidator();
+			validator.setErrorHandler(new __ErrorHandler());
+		}
 	}
 
 	public void transform(File input, File output) throws SAXException, IOException, TransformerException {
@@ -55,7 +59,9 @@ public class JsonToXml {
 			return;
 		}
 		transformer.transform(new SAXSource(new JsonSaxParser(), new InputSource(input.toString())), new StreamResult(output));
-		validator.validate(new StreamSource(output));
+		if (validator != null) {
+			validator.validate(new StreamSource(output));
+		}
 	}
 
 	private static final class __ErrorHandler implements ErrorHandler {
