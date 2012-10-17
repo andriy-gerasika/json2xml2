@@ -1,5 +1,4 @@
-<project default="dist">
-	<property name="name" value="json2xml2" />
+<project name="json2xml2" default="dist">
 
 	<target name="clean">
 		<delete dir="dist" />
@@ -7,8 +6,8 @@
 
 	<target name="dist" depends="clean">
 		<mkdir dir="dist" />
-		<zip zipfile="dist/${name}.zip">
-			<fileset excludes="bin/**, dist/**, build.xml, files/*.xml, lib/**/*.jar" dir="."/>
+		<zip zipfile="dist/${ant.project.name}.zip">
+			<fileset excludes="bin/**, dist/**, build/**, dist.xml, files/*.xml, lib/**/*.jar" dir="."/>
 		</zip>
 	</target>
 
