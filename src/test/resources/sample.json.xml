@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<json>
+    <object>
+        <element name="firstName">
+            <string>John</string>
+        </element>
+        <element name="lastName">
+            <string>Smith</string>
+        </element>
+        <element name="age">
+            <integer>25</integer>
+        </element>
+        <element name="address">
+            <object>
+                <element name="streetAddress">
+                    <string>21 2nd Street</string>
+                </element>
+                <element name="city">
+                    <string>New York</string>
+                </element>
+                <element name="state">
+                    <string>NY</string>
+                </element>
+                <element name="postalCode">
+                    <string>10021</string>
+                </element>
+            </object>
+        </element>
+        <element name="phoneNumber">
+            <array>
+                <object>
+                    <element name="type">
+                        <string>home</string>
+                    </element>
+                    <element name="number">
+                        <string>212 555-1234</string>
+                    </element>
+                </object>
+                <object>
+                    <element name="type">
+                        <string>fax</string>
+                    </element>
+                    <element name="number">
+                        <string>646 555-4567</string>
+                    </element>
+                </object>
+            </array>
+        </element>
+    </object>
+</json>
