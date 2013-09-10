@@ -2,6 +2,7 @@ package com.gerixsoft.json2xml2;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -62,6 +63,12 @@ public class JsonToXml {
 		if (validator != null) {
 			validator.validate(new StreamSource(output));
 		}
+	}
+
+	public String transform(String filename) throws SAXException, TransformerException {
+		StringWriter sw = new StringWriter();
+		transformer.transform(new SAXSource(new JsonSaxParser(), new InputSource(filename)), new StreamResult(sw));
+		return sw.toString();
 	}
 
 	private static final class __ErrorHandler implements ErrorHandler {
